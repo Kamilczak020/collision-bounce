@@ -89,7 +89,7 @@ for (var x = 0; x < vendors.length && !window.requestAnimationFrame; x++) {
 
 var canvas,
     context,
-    fps = 1,
+    fps = 30,
     interval = 1000 / fps,
     lastTime = new Date().getTime(),
     currentTime = 0,
@@ -118,8 +118,8 @@ function gameLoop() {
         context.clearRect(0, 0, canvas.width, canvas.height);
 
         gameObjects.forEach(function (element) {
-            element.move();
             element.render(context);
+            element.move();
         });
 
         lastTime = currentTime - delta % interval;
@@ -216,12 +216,11 @@ Object.defineProperty(exports, "__esModule", {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var VelVector = function VelVector(x, y, magnitude) {
+var VelVector = function VelVector(x, y) {
     _classCallCheck(this, VelVector);
 
-    x: x;
-    y: y;
-    magnitude: magnitude;
+    this.x = x;
+    this.y = y;
 };
 
 exports.default = VelVector;

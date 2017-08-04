@@ -11,7 +11,7 @@ for(var x = 0; x < vendors.length && !window.requestAnimationFrame; x++) {
 
 var canvas,
     context,
-    fps = 1,
+    fps = 30,
     interval = 1000/fps,
     lastTime = (new Date()).getTime(),
     currentTime = 0,
@@ -40,8 +40,8 @@ function gameLoop() {
         context.clearRect(0, 0, canvas.width, canvas.height);
 
         gameObjects.forEach((element) => {
-            element.move();
             element.render(context);
+            element.move();
         })
 
         lastTime = currentTime - (delta % interval);
