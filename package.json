@@ -1,0 +1,30 @@
+{
+  "name": "collision-bounce",
+  "version": "1.0.0",
+  "description": "Mutiple objects cluster collision and bounce",
+  "main": "webpack.config.js",
+  "dependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-loader": "^7.1.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "webpack": "^3.4.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "babel": "babel --presets es2015 js/main.js -o build/main.bundle.js",
+    "start": "http-server",
+    "webpack": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kamilczak020/collision-bounce.git"
+  },
+  "author": "Kamil Solecki",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kamilczak020/collision-bounce/issues"
+  },
+  "homepage": "https://github.com/Kamilczak020/collision-bounce#readme"
+}
