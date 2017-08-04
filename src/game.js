@@ -1,33 +1,49 @@
 // Imports
 import GameObject from './gameobject';
-import VelVector from './velvector';
+import Vector from './vector';
+import Quadtree from 'quadtree-lib';
 
-var vendors = ['webkit', 'moz'];
+let vendors = ['webkit', 'moz'];
 for(var x = 0; x < vendors.length && !window.requestAnimationFrame; x++) {
     window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
     window.cancelAnimationFrame =
       window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
 }
 
-var canvas,
+// global accessible canvas members and quadtree
+let canvas,
     context,
-    fps = 30,
+    qTree;
+
+// Timing / game loop settings
+let fps = 30,
     interval = 1000/fps,
     lastTime = (new Date()).getTime(),
     currentTime = 0,
     delta = 0;
 
-var gameRunning = false;
+// Array to hold all active game objects
+let gameObjects = [];
 
-var gameObjects = [];
+let isGameRunning = false;
 
 // Get our canvas
 function init() {
     canvas = document.getElementById("myCanvas");
     context = canvas.getContext("2d");
 
-    canvas.addEventListener("click", createGameObject);
-    canvas.addEventListener("click", startGame);
+    if (canvas !== undefined) {
+        canvas.addEventListener("click", createGameObject);
+
+        // Create Quadtree
+        qTree = new Quadtree({
+        	width: canvas.width,
+        	height: canvas.height,
+            maxElements: 5
+        });
+
+        gameLoop();
+    }
 }
 
 function gameLoop() {
@@ -37,32 +53,43 @@ function gameLoop() {
     delta = (currentTime - lastTime);
 
     if(delta > interval) {
-        context.clearRect(0, 0, canvas.width, canvas.height);
 
-        gameObjects.forEach((element) => {
-            element.render(context);
-            element.move();
-        })
+        frameActions();
 
         lastTime = currentTime - (delta % interval);
     }
 }
 
-function startGame() {
-    if (!gameRunning) gameLoop();
-    gameRunning = true;
+function frameActions() {
+    // Clear canvas and quadTree every frame
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    gameObjects.forEach((element) => {
+        element.move();
+        element.render(context);
+
+        qTree.push({
+            x: element.x,
+            y: element.y,
+            width: element.radius,
+            height: element.radius
+        })
+    })
 }
 
 function createGameObject(event) {
-    let x = getMousePos(event).x;
-    let y = getMousePos(event).y;
-    let radius = 5;
-    let velVector = new VelVector(0.1, 0.1);
+    let x = getMousePos(event).x,
+        y = getMousePos(event).y,
+        radius = 5,
+        color = "#ffcd22";
 
-    let obj = new GameObject(x, y, radius, velVector);
+    let velX = randomFromInterval(-1, 1),
+        velY = randomFromInterval(-1, 1);
+
+    let velVector = new Vector(velX, velY);
+
+    let obj = new GameObject(x, y, radius, velVector, color);
     gameObjects.push(obj);
-
-    startGame();
 }
 
 function getMousePos(event) {
@@ -73,6 +100,9 @@ function getMousePos(event) {
     };
 }
 
+function randomFromInterval(min, max) {
+    return (Math.random() * (max - min + 1) + min);
+}
+
 // Start the game
 init();
-gameLoop();
